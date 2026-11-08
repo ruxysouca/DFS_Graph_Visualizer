@@ -42,3 +42,41 @@ class DirectedGraph:
                         stack.pop()
 
         return finish_order
+
+    def get_strongly_connected_components(self):
+        finish_order = self.iterative_dfs_finish_order()
+
+        visited = set()
+        scc_list = []
+
+        for node in reversed(finish_order):
+            if node not in visited:
+                component = []
+                stack = [node]
+                visited.add(node)
+
+                while stack:
+                    curr = stack.pop()
+                    component.append(curr)
+
+                    for neighbor in self.rev_adj[curr]:
+                        if neighbor not in visited:
+                            visited.add(neighbor)
+                            stack.append(neighbor)
+
+                scc_list.append(component)
+
+        return scc_list
+
+    def has_cycles(self):
+        sccs = self.get_strongly_connected_components()
+
+        for comp in sccs:
+            if len(comp) > 1:
+                return True
+
+            node = comp[0]
+            if node in self.adj[node]:
+                return True
+
+        return False
