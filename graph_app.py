@@ -1,0 +1,42 @@
+import tkinter as tk
+from tkinter import messagebox
+from graph import DirectedGraph
+
+class GraphApp:
+
+    def __init__(self, window):
+        self.window = window
+        self.window.title("DFS Graph Visualizer")
+
+        self.graph = DirectedGraph()
+        self.node_radius = 20
+
+        self.selected_node_for_edge = None
+        self.start_node = None
+        self.paths = {}
+        self.path_list = []
+        self.current_path_idx = 0
+
+        self.canvas = tk.Canvas(self.window, bg = "white", width = 800, height = 550)
+        self.canvas.grid(row = 0, column = 0, padx = 10, pady = 10)
+
+        self.canvas.bind("<Button-1>", self.on_left_click)
+        self.canvas.bind("<Button-3>", self.on_right_click)
+
+        self.control_frame = tk.Frame(self.window)
+        self.control_frame.grid(row = 1, column = 0, pady = (0, 10))
+
+        self.run_button = tk.Button(self.control_frame, text = "Run Algorithms", command = self.run_algorithms, bg = "#d4edda", font = ("Courier", 10, "bold"))
+        self.run_button.grid(row = 0, column = 0, padx = 10)
+
+        self.prev_button = tk.Button(self.control_frame, text = "< Prev", command = self.show_prev, state = tk.DISABLED, font = ("Courier", 10, "bold"))
+        self.prev_button.grid(row = 0, column = 1, padx = 5)
+
+        self.path_label = tk.Label(self.control_frame, text = "Path: 0/0", font = ("Courier", 10, "bold"))
+        self.path_label.grid(row = 0, column = 2, padx = 10)
+
+        self.next_button = tk.Button(self.control_frame, text = "Next >", command = self.show_next, state = tk.DISABLED, font = ("Courier", 10, "bold"))
+        self.next_button.grid(row = 0, column = 3, padx = 5)
+
+        self.reset_button = tk.Button(self.control_frame, text = "Reset Graph", command = self.reset_graph, bg = "#f8d7da", font = ("Courier", 10, "bold"))
+        self.reset_button.grid(row = 0, column = 4, padx = 15)
