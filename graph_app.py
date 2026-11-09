@@ -40,3 +40,29 @@ class GraphApp:
 
         self.reset_button = tk.Button(self.control_frame, text = "Reset Graph", command = self.reset_graph, bg = "#f8d7da", font = ("Courier", 10, "bold"))
         self.reset_button.grid(row = 0, column = 4, padx = 15)
+
+    def get_node_at(self, x, y):
+        for node_id, (nx, ny) in self.graph.nodes.item():
+            dist_sq = (x - nx) ** 2 + (y - ny) ** 2
+            if dist_sq <= self.node_radius ** 2:
+                return node_id
+
+        return None
+
+    def on_left_click(self, event):
+        pass
+
+    def on_right_click(self, event):
+        pass
+
+    def show_prev(self):
+        pass
+
+    def show_next(self):
+        pass
+
+    def run_algorithms(self):
+        pass
+
+    def reset_graph(self):
+        pass
