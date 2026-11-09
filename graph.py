@@ -80,3 +80,40 @@ class DirectedGraph:
                 return True
 
         return False
+
+    def topological_sort(self):
+        finish_order = self.iterative_dfs_finish_order()
+        return list(reversed(finish_order))
+
+    def shortest_path_from_source(self, source):
+        topo_order = self.topological_sort()
+
+        if source not in topo_order:
+            return {}, {}
+
+        src_idx = topo_order.index(source)
+        valid_nodes = topo_order[src_idx:]
+
+        dist = {node: float('inf') for node in self.nodes}
+        parent = {node: None for node in self.nodes}
+        dist[source] = 0
+
+        for u in valid_nodes:
+            if dist[u] != float('inf'):
+                for v in self.adj[u]:
+                    if dist[u] + 1 < dist[v]:
+                        dist[v] = dist[u] + 1
+                        parent[v] = u
+
+        paths = {}
+        for target in self.nodes:
+            if dist[target] != float('inf') and target != source:
+                path = []
+                curr = target
+                while curr is not None:
+                    path.append(curr)
+                    curr = parent[curr]
+                path.reverse()
+                paths[target] = path
+
+        return dist, paths
