@@ -42,7 +42,7 @@ class GraphApp:
         self.reset_button.grid(row = 0, column = 4, padx = 15)
 
     def get_node_at(self, x, y):
-        for node_id, (nx, ny) in self.graph.nodes.item():
+        for node_id, (nx, ny) in self.graph.nodes.items():
             dist_sq = (x - nx) ** 2 + (y - ny) ** 2
             if dist_sq <= self.node_radius ** 2:
                 return node_id
@@ -90,6 +90,72 @@ class GraphApp:
 
             self.redraw()
 
+    def redraw(self):
+        self.canvas.delete("all")
+
+        active_path = []
+        if self.path_list and 0 <= self.current_path_idx < len(self.path_list):
+            active_path = self.path_list[self.current_path_idx]
+
+        active_edges = set(zip(active_path[:-1], active_path[1:]))
+        active_nodes = set(active_path)
+
+        for u, neighbors in self.graph.adj.items():
+            x1, y1 = self.graph.nodes[u]
+            for v in neighbors:
+                x2, y2 = self.graph.nodes[v]
+
+                dx, dy = x2 - x1, y2 - y1
+                dist = (dx**2 + dy**2)**0.5
+                if dist > 0:
+                    target_x = x2 - (dx / dist) * self.node_radius
+                    target_y = y2 - (dy / dist) * self.node_radius
+                else:
+                    target_x, target_y = x2, y2
+
+                if (u, v) in active_edges:
+                    edge_color = "#28a745"
+                    edge_width = 3
+                else:
+                    edge_color = "#6c757d"
+                    edge_width = 1
+
+                self.canvas.create_line(
+                    x1, y1, target_x, target_y,
+                    arrow = tk.LAST, arrowshape = (10, 12, 5),
+                    fill = edge_color, width = edge_width
+                )
+
+        for node_id, (x, y) in self.graph.nodes.items():
+            r = self.node_radius
+            fill_color = "#f8f9fa"
+            outline_color = "#343a40"
+            outline_width = 2
+
+            if node_id in active_nodes:
+                fill_color = "#d4edda"
+                outline_color = "#28a745"
+                outline_width = 3
+
+            if node_id == self.start_node:
+                fill_color = "#fff3cd"
+                outline_color = "#ffc107"
+                outline_width = 3
+
+            if node_id == self.selected_node_for_edge:
+                outline_color = "#007bff"
+                outline_width = 3
+
+            self.canvas.create_oval(
+                x - r, y - r, x + r, y + r,
+                fill = fill_color, outline = outline_color, width = outline_width
+            )
+
+            self.canvas.create_text(
+                x, y,
+                text = str(node_id), font = ("Courier", 10, "bold"), fill = "#212529"
+            )
+
     def show_prev(self):
         pass
 
@@ -100,7 +166,4 @@ class GraphApp:
         pass
 
     def reset_graph(self):
-        pass
-
-    def redraw(self):
         pass
