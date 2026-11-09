@@ -73,7 +73,22 @@ class GraphApp:
             self.redraw()
 
     def on_right_click(self, event):
-        pass
+        clicked_node = self.get_node_at(event.x, event.y)
+
+        if clicked_node is not None:
+            if self.start_node == clicked_node:
+                self.start_node = None
+            else:
+                self.start_node = clicked_node
+
+            self.paths = {}
+            self.path_list = []
+            self.current_path_idx = 0
+            self.prev_button.config(state = tk.DISABLED)
+            self.next_button.config(state = tk.DISABLED)
+            self.path_label.config(text = "Path: 0/0")
+
+            self.redraw()
 
     def show_prev(self):
         pass
