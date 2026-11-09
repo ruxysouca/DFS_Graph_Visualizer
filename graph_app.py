@@ -50,7 +50,27 @@ class GraphApp:
         return None
 
     def on_left_click(self, event):
-        pass
+        clicked_node = self.get_node_at(event.x, event.y)
+
+        if clicked_node is None:
+            new_id = len(self.graph.nodes) + 1
+            self.graph.add_node(new_id, event.x, event.y)
+            self.selected_node_for_edge = None
+            self.redraw()
+            return
+
+        if self.selected_node_for_edge is None:
+            self.selected_node_for_edge = clicked_node
+            self.redraw()
+
+        elif self.selected_node_for_edge != clicked_node:
+            self.graph.add_edge(self.selected_node_for_edge, clicked_node)
+            self.selected_node_for_edge = None
+            self.redraw()
+
+        else:
+            self.selected_node_for_edge = None
+            self.redraw()
 
     def on_right_click(self, event):
         pass
@@ -65,4 +85,7 @@ class GraphApp:
         pass
 
     def reset_graph(self):
+        pass
+
+    def redraw(self):
         pass
