@@ -178,10 +178,26 @@ class GraphApp:
             )
 
     def show_prev(self):
-        pass
+        if self.current_path_idx > 0:
+            self.current_path_idx -= 1
+            self.path_label.config(text = f"Path: {self.current_path_idx + 1}/{len(self.path_list)}")
+            self.next_button.config(state = tk.NORMAL)
+
+            if self.current_path_idx == 0:
+                self.prev_button.config(state = tk.DISABLED)
+
+            self.redraw()
 
     def show_next(self):
-        pass
+        if self.current_path_idx < len(self.path_list) - 1:
+            self.current_path_idx += 1
+            self.path_label.config(text=f"Path: {self.current_path_idx + 1}/{len(self.path_list)}")
+            self.prev_button.config(state=tk.NORMAL)
+
+            if self.current_path_idx == len(self.path_list) - 1:
+                self.next_button.config(state=tk.DISABLED)
+
+            self.redraw()
 
     def run_algorithms(self):
         if not self.graph.nodes:
