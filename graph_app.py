@@ -49,12 +49,34 @@ class GraphApp:
 
         return None
 
+    def clamp_coordinates(self, x, y, padding = 10):
+        margin = self.node_radius + padding
+        clamped_x = max(margin, min(x, 800 - margin))
+        clamped_y = max(margin, min(y, 550 - margin))
+
+        return clamped_x, clamped_y
+
+    def is_valid_node_position(self, x, y):
+        min_distance = self.node_radius * 4
+        for node_id, (nx, ny) in self.graph.nodes.items():
+            dist = ((x-nx) ** 2 + (y-ny) ** 2) ** 0.5
+            if dist < min_distance:
+                return False
+
+        return True
+
+
     def on_left_click(self, event):
         clicked_node = self.get_node_at(event.x, event.y)
 
         if clicked_node is None:
+            clamped_x, clamped_y = self.clamp_coordinates(event.x, event.y)
+
+            if not self.is_valid_node_position(clamped_x, clamped_y):
+                return
+
             new_id = len(self.graph.nodes) + 1
-            self.graph.add_node(new_id, event.x, event.y)
+            self.graph.add_node(new_id, clamped_x, clamped_y)
             self.selected_node_for_edge = None
             self.redraw()
             return
