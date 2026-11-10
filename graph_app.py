@@ -65,7 +65,6 @@ class GraphApp:
 
         return True
 
-
     def on_left_click(self, event):
         clicked_node = self.get_node_at(event.x, event.y)
 
@@ -185,7 +184,38 @@ class GraphApp:
         pass
 
     def run_algorithms(self):
-        pass
+        if not self.graph.nodes:
+            messagebox.showwarning(title = "Warning", message = "There are no nodes in the graph!")
+            return
+
+        if self.start_node is None:
+            messagebox.showwarning(title = "Warning", message = "Please select a start node using right-click!")
+            return
+
+        if self.graph.has_cycles():
+            messagebox.showerror(title = "Error", message = "The graph contains cycles! The algorithm requires a DAG.")
+            return
+
+        dist, self.paths = self.graph.shortest_path_from_source(self.start_node)
+
+        self.path_list = [path for path in self.paths.values() if len(path) > 1]
+        self.current_path_idx = 0
+
+        if self.path_list:
+            self.path_label.config(text = f"Path: 1/{len(self.path_list)}")
+            self.prev_button.config(state = tk.DISABLED)
+
+            if len(self.path_list) > 1:
+                self.next_button.config(state = tk.NORMAL)
+            else:
+                self.next_button.config(state = tk.DISABLED)
+
+        else:
+            self.path_label.config(text = "No reachable paths!")
+            self.prev_button.config(state = tk.DISABLED)
+            self.next_button.config(state = tk.DISABLED)
+
+        self.redraw()
 
     def reset_graph(self):
         pass
