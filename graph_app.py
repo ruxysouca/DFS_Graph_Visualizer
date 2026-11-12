@@ -93,6 +93,15 @@ class GraphApp:
             self.selected_node_for_edge = None
             self.redraw()
 
+    def clear_paths_state(self):
+        self.paths = {}
+        self.path_list = []
+        self.current_path_idx = 0
+
+        self.prev_button.config(state=tk.DISABLED)
+        self.next_button.config(state=tk.DISABLED)
+        self.path_label.config(text="Path: 0/0")
+
     def on_right_click(self, event):
         clicked_node = self.get_node_at(event.x, event.y)
 
@@ -102,13 +111,7 @@ class GraphApp:
             else:
                 self.start_node = clicked_node
 
-            self.paths = {}
-            self.path_list = []
-            self.current_path_idx = 0
-            self.prev_button.config(state = tk.DISABLED)
-            self.next_button.config(state = tk.DISABLED)
-            self.path_label.config(text = "Path: 0/0")
-
+            self.clear_paths_state()
             self.redraw()
 
     def redraw(self):
@@ -234,4 +237,8 @@ class GraphApp:
         self.redraw()
 
     def reset_graph(self):
-        pass
+        self.graph = DirectedGraph()
+        self.selected_node_for_edge = None
+        self.start_node = None
+        self.clear_paths_state()
+        self.redraw()
